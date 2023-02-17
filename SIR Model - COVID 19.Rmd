@@ -1,0 +1,69 @@
+---
+title: "SIR Model - COVID19"
+author: "Sinead E. Morris"
+date: "17 Feb. 2023"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(devtools)
+library(shinySIR)
+```
+
+
+# Re-running SIR Model Shiny Applications
+
+## shinySIR: Interactive plotting for infectious disease models
+
+https://cran.r-project.org/web/packages/shinySIR/vignettes/Vignette.html
+
+```{r}
+mySIRS <- function(t, y, parms) {
+
+    with(as.list(c(y, parms)),{
+
+        # Change in Susceptible
+        dS <- - beta * S * I + delta * R
+
+        # Change in Infected
+        dI <- beta * S * I - gamma * I
+
+        # Change in Recovered
+        dR <- gamma * I - delta * R
+
+    return(list(c(dS, dI, dR)))
+    })
+}
+```
+
+```{r}
+run_shiny(model = "SIR")
+```
+
+```{r}
+run_shiny(model = "SIRS (w/out demography)", 
+          neweqns = mySIRS,
+          ics = c(S = 9999, I = 1, R = 0),
+          parm0 = c(beta = 5e-5, gamma = 1/7, delta = 0.1),
+          parm_names = c("Transmission rate", "Recovery rate", "Loss of Immunity"),
+          parm_min = c(beta = 1e-5, gamma = 1/21, delta = 1/365),
+          parm_max = c(beta = 9e-5, gamma = 1 , delta = 1))
+```
+
+```{r}
+run_shiny(model = "SIRvaccination")
+```
+
+```{r}
+run_shiny(model = "SIRvaccination", 
+          neweqns = mySIRS,
+          ics = c(S = 9999, I = 1, R = 0),
+          parm0 = c(beta = 5e-5, gamma = 1/7, delta = 0.1),
+          parm_names = c("Transmission rate", "Recovery rate", "Loss of immunity"),
+          parm_min = c(beta = 1e-5, gamma = 1/21, delta = 1/365),
+          parm_max = c(beta = 9e-5, gamma = 1 , delta = 1))
+```
+

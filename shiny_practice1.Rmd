@@ -1,0 +1,83 @@
+---
+title: "Shiny practice and App Fixes"
+author: "Hannah Damico"
+date: "6/5/2022"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+```{r}
+data("mtcars")
+str(mtcars)
+```
+
+
+```{r}
+mtcars %>% 
+  ggplot() +
+  geom_tile(aes(as.factor(gear), as.factor(carb)))
+```
+
+
+```{r}
+library(palmerpenguins)
+#View(penguins)
+
+penguins %>% 
+  drop_na() %>% 
+  ggplot() +
+  geom_tile(aes(as.factor(species), as.factor(year), fill = as.factor(sex))) + scale_fill_discrete(aes(fill = as.factor(sex)))
+
+
+
+
+penguins %>% 
+  drop_na() %>% 
+  ggplot() +
+  geom_tile(aes(as.factor(species), as.factor(year), fill = as.factor(sex))) + scale_fill_viridis_d(aes("Sex", fill = as.factor(sex)), direction = -1, option = "mako")
+
+```
+
+```{r}
+data(iris)
+#View(iris)
+
+iris %>% 
+  drop_na() %>% 
+  ggplot() +
+  geom_tile(aes((Petal.Length), (Sepal.Length), fill = as.factor(Species))) + scale_fill_viridis_d(aes(fill = as.factor(Species)), direction = 1, option = "mako")
+
+```
+
+```{r fig.width=7}
+# iris %>% 
+#             drop_na() %>% 
+#             ggplot() +
+#             geom_histogram(aes((Petal.Length), fill = as.factor(Species)), bins = 50)
+#         
+
+
+
+iris_BF <- function(bins) {
+  iris %>%
+    drop_na() %>%
+    ggplot() +
+    geom_histogram(aes((Petal.Length), fill = as.factor(Species)), bins = bins)
+}
+
+library(patchwork)
+(iris_BF(30) + iris_BF(40)) / ( iris_BF(50) + iris_BF(100))
+```
+
+```{r}
+x <-(iris[,2])
+seq(min(x), max(x), length.out = 20 + 1)
+```
+
+
